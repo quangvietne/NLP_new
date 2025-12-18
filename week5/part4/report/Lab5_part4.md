@@ -37,7 +37,7 @@ Mô hình `SimpleRNNForNER` được thiết kế với 3 lớp chính:
 
 ### Yêu cầu thư viện
 - Đảm bảo đã cài đặt các thư viện cần thiết:
-- ```bash
+- bash
 - pip install torch datasets seqeval
 - Các bước thực hiện
 - Mở file lab5_rnn_for_ner.ipynb 
@@ -92,3 +92,9 @@ Giải pháp: Gán giá trị nhãn padding là -1 và thiết lập ignore_inde
 Khó khăn: Output của RNN có dạng (Batch, Seq_len, Num_classes) nhưng CrossEntropyLoss yêu cầu Input (N, C).
 
 Giải pháp: Sử dụng hàm .view(-1, OUTPUT_SIZE) để "làm phẳng" (flatten) tensor dự đoán và nhãn trước khi đưa vào hàm loss.
+
+
+## 6 . Tài liệu tham khảo 
+**Stanford CS224n: Natural Language Processing with Deep Learning**
+- Lecture 8: Sequence Models & Attention (Nói về RNN/LSTM).
+- Website: web.stanford.edu/class/cs224n/

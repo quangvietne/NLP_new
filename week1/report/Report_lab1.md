@@ -3,6 +3,7 @@
 ---
 
 # LAB 1
+
 ## Mô tả công việc 
 
 Hiểu và triển khai bước tiền xử lý văn bản cơ bản: tokenization. Tạo cả tokenizer đơn giản và tokenizer nâng cao bằng regex.
@@ -36,6 +37,12 @@ Hiểu và triển khai bước tiền xử lý văn bản cơ bản: tokenizati
    - File: `test/lab1_test.py`  
    - Chạy thử tokenizer trên câu mẫu và sample từ dataset, in ra token.
 
+
+## Cách chạy code Lab 1
+
+```bash
+python -m week1.test.lab1_test
+```
 
 ## Kết quả chạy code
 

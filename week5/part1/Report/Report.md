@@ -2,6 +2,9 @@
 
 # BÁO CÁO THỰC HÀNH: week5_part1
 
+## Lưu ý , code ở mục notebook/lab5_pytorch_introduction.ipynb
+
+
 ## I. Tổng quan
 
 Bài thực hành nhằm mục đích làm quen với **PyTorch**, một thư viện mã nguồn mở phổ biến cho Deep Learning. Nội dung bao gồm 3 phần chính:

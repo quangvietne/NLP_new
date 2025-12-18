@@ -2,7 +2,6 @@
 
 # BÁO CÁO THỰC HÀNH PART 3: PART-OF-SPEECH TAGGING VỚI RNN 
 
-Dưới đây là tổng kết toàn bộ quá trình mình xây dựng mô hình gán nhãn từ loại sử dụng mạng RNN đơn giản.
 
 ### ⊠ Các bước triển khai
 

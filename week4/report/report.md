@@ -49,7 +49,7 @@ Thử nghiệm 3: Thay thế LogisticRegression bằng Neural Network (MLP):
 - Mô hình LogisticRegression được thay thế bằng MultilayerPerceptronClassifier (MLP).
 - Kiến trúc mạng được định nghĩa bằng layers = [10000, 64, 32, 2], trong đó 10000 là kích thước đầu vào (khớp với numFeatures), 64 và 32 là các lớp ẩn, và 2 là lớp đầu ra (cho 2 nhãn 0 và 1).
 
-# 2. Hướng dẫn chạy code 
+# 2. Hướng dẫn chạy code  và kết quả 
 ### Với task 1, 2 , 3 . 
 - Chạy file lab5_test.ipynb và xem kết quả : 
 - Result

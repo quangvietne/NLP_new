@@ -1,6 +1,4 @@
-announcement.pdf
-lab1_tokenization.pdf
-lab2_count_vectorization.pdf
+File data nặng nên ko đc push lên git 
 en_ewt-ud-dev.conllu
 en_ewt-ud-dev.txt
 en_ewt-ud-test.conllu
@@ -10,3 +8,4 @@ en_ewt-ud-train.txt
 LICENSE.txt
 README.md
 stats.xml
+

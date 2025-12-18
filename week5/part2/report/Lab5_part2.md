@@ -101,7 +101,8 @@ Dưới đây là bảng tổng hợp độ chính xác (Accuracy) ghi nhận đ
 
 1. Đảm bảo đã cài đặt các thư viện: `pandas`, `numpy`, `sklearn`, `gensim`, `tensorflow`.
 2. Chỉnh sửa đường dẫn file csv (`train.csv`, `val.csv`, `test.csv`) trong cell đầu tiên nếu cần.
-3. Chạy lần lượt các cell từ trên xuống dưới (Run All).
+3. Chạy code trong notebook/lab5_lstm.ipynb
+4. Chạy lần lượt các cell từ trên xuống dưới (Run All).
 
 
 

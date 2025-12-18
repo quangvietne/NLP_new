@@ -1,5 +1,115 @@
 
-### 📊 Bảng so sánh kết quả định lượng
+# BÁO CÁO THỰC HÀNH: PHÂN LOẠI VĂN BẢN VỚI LSTM & WORD EMBEDDINGS
+
+## 1. Tóm tắt kết quả thực nghiệm
+
+Dưới đây là bảng tổng hợp độ chính xác (Accuracy) ghi nhận được từ 4 mô hình trong file notebook:
+
+| Task | Mô hình | Accuracy | Nhận xét |
+| --- | --- | --- | --- |
+| **Task 1** | **TF-IDF + Logistic Regression** | **0.8355** | Kết quả tốt nhất, chạy nhanh và hiệu quả. |
+| **Task 2** | Word2Vec (Average) + Dense | 0.3268 | Hiệu quả thấp do mất thông tin thứ tự từ khi tính trung bình. |
+| **Task 3** | LSTM + Pre-trained Word2Vec | 0.0967 | Mô hình không hội tụ tốt, kết quả rất thấp. |
+| **Task 4** | LSTM + End-to-End Embedding | 0.0177 | Kết quả kém nhất, gần như dự đoán ngẫu nhiên. |
+
+
+
+## 2. Chi tiết triển khai từng Task
+
+### □ Task 1: Baseline Model 1 (TF-IDF + Logistic Regression)
+
+**Các bước triển khai:**
+
+1. **Tiền xử lý:** Sử dụng `TfidfVectorizer` (giới hạn `max_features=5000`) để chuyển đổi văn bản thành các vector đặc trưng dựa trên tần suất từ.
+2. **Mô hình:** Sử dụng `LogisticRegression` với `max_iter=1000` để phân loại.
+3. **Pipeline:** Kết hợp Vectorizer và Model vào một pipeline duy nhất `make_pipeline`.
+4. **Huấn luyện:** Gọi hàm `.fit()` trên tập train.
+
+**Kết quả:**
+
+* Mô hình đạt độ chính xác **83.55%** trên tập test.
+* Các lớp như `general_affirm`, `transport_taxi` đạt F1-score tuyệt đối (1.0).
+
+### □ Task 2: Baseline Model 2 (Word2Vec + Dense Layer)
+
+**Các bước triển khai:**
+
+1. **Word Embedding:** Huấn luyện mô hình Word2Vec từ đầu (from scratch) trên tập dữ liệu train bằng thư viện `gensim`.
+* Tham số: `vector_size=100`, `window=5`.
+
+
+2. **Feature Engineering:** Viết hàm `sentence_to_avg_vector` để chuyển mỗi câu thành vector trung bình cộng của các từ trong câu đó.
+3. **Mô hình:** Xây dựng mạng nơ-ron đơn giản (Feed Forward) với Keras:
+* Lớp ẩn: Dense (128 units, activation='relu') + Dropout (0.5).
+* Lớp đầu ra: Dense (số lớp, activation='softmax').
+
+
+4. **Huấn luyện:** Chạy 100 epochs.
+
+**Kết quả:**
+
+* Độ chính xác giảm mạnh xuống còn **32.68%**.
+* Việc lấy trung bình cộng các vector từ đã làm mất đi ngữ nghĩa về thứ tự câu, khiến mô hình khó phân biệt các câu lệnh phức tạp.
+
+### □ Task 3: LSTM Model with Pre-trained Embeddings
+
+**Các bước triển khai:**
+
+1. **Tiền xử lý chuỗi:**
+* Sử dụng `Tokenizer` để tạo từ điển (vocab).
+* Chuyển văn bản thành chuỗi số (`texts_to_sequences`).
+* Sử dụng `pad_sequences` để cố định độ dài câu (`max_len=50`).
+
+
+2. **Embedding Matrix:** Tạo ma trận trọng số từ mô hình Word2Vec đã train ở Task 2.
+3. **Mô hình:**
+* Lớp **Embedding**: Khởi tạo với weights từ Word2Vec, thiết lập `trainable=False` (không huấn luyện lại weights này).
+* Lớp **LSTM**: 128 units, dropout=0.2.
+* Lớp Output: Dense.
+
+
+4. **Huấn luyện:** Sử dụng `EarlyStopping` để dừng sớm nếu không cải thiện.
+
+**Kết quả:**
+
+* Độ chính xác rất thấp: **9.67%**.
+* **Nguyên nhân:** Vector Word2Vec tự train trên tập dữ liệu nhỏ (khoảng 9000 câu) chưa đủ tốt để làm đặc trưng cố định (frozen) cho LSTM.
+
+### □ Task 4: LSTM Model with End-to-End Training
+
+**Các bước triển khai:**
+
+1. **Tiền xử lý:** Tương tự Task 3 (Tokenize & Padding).
+2. **Mô hình:**
+* Lớp **Embedding**: Khởi tạo ngẫu nhiên, thiết lập `trainable=True` để mô hình tự học vector từ trong quá trình train.
+* Lớp **LSTM**: 128 units.
+* Lớp Output: Dense.
+
+
+3. **Huấn luyện:** Chạy 100 epochs với EarlyStopping.
+
+**Kết quả:**
+
+* Độ chính xác thấp nhất: **1.77%**.
+* **Nguyên nhân:** Mô hình Deep Learning (LSTM) cần lượng dữ liệu lớn để học embedding từ đầu. Với tập dữ liệu nhỏ (~9000 mẫu) và nhiều lớp phân loại (64 lớp intent), mô hình gặp khó khăn trong việc hội tụ.
+
+---
+
+## 3. Cách chạy code và ghi log kết quả
+
+**Cách chạy:**
+
+1. Đảm bảo đã cài đặt các thư viện: `pandas`, `numpy`, `sklearn`, `gensim`, `tensorflow`.
+2. Chỉnh sửa đường dẫn file csv (`train.csv`, `val.csv`, `test.csv`) trong cell đầu tiên nếu cần.
+3. Chạy lần lượt các cell từ trên xuống dưới (Run All).
+
+
+
+
+
+
+
+## 4 . Giải thích kết quả & Khó khăn gặp phải
 
 Sau khi huấn luyện và đánh giá cả 4 pipeline, đây là kết quả
 
@@ -91,7 +201,8 @@ Sau khi chạy cả 4 mô hình, có một điều trở nên rất rõ ràng: D
 
 Trong khi đó, các kiến trúc phức tạp như LSTM, dù mạnh mẽ về lý thuyết, lại hoàn toàn thất bại. Chúng bị "đói" dữ liệu (data starvation) và không thể học được các mối liên hệ phức tạp, đặc biệt là khi không có sự hỗ trợ của embedding chất lượng cao (như GloVe hay FastText). Điều này dẫn đến kết quả tệ hơn đáng kể và là một bài học kinh điển về việc lựa chọn mô hình phù hợp với quy mô dữ liệu
 
-### Tài liệu tham khảo : 
+## 5.  Tài liệu tham khảo : 
 - Link github thầy Phương post trên lớp 
 - Gợi ý code từ Grock
 - Tài liệu từ trang chủ tensorflow
+- Thư viện: Scikit-learn (TF-IDF, Logistic Regression), Gensim (Word2Vec), TensorFlow/Keras (LSTM).

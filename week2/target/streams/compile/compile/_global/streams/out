@@ -1,0 +1,7 @@
+[0m[[0m[31merror[0m] [0m[0mD:\Study\NLP\Lab2\src\main\scala\com\quangviet\spark\Lab17_NLPPipeline.scala:114:12: method asBreeze in trait Vector cannot be accessed in org.apache.spark.ml.linalg.Vector[0m
+[0m[[0m[31merror[0m] [0m[0m      vec1.asBreeze.dot(vec2.asBreeze) [0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0mD:\Study\NLP\Lab2\src\main\scala\com\quangviet\spark\Lab17_NLPPipeline.scala:114:30: method asBreeze in trait Vector cannot be accessed in org.apache.spark.ml.linalg.Vector[0m
+[0m[[0m[31merror[0m] [0m[0m      vec1.asBreeze.dot(vec2.asBreeze) [0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

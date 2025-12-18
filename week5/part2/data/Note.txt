@@ -1,0 +1,8 @@
+File data nặng nên ko push lên github
+categories.json 
+test.csv
+train.csv
+val.csv
+train_5.csv
+train_10.csv
+hwu.tar.gz

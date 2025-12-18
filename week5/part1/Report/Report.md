@@ -1,138 +1,146 @@
 
+# BÁO CÁO THỰC HÀNH PART 1: TÌM HIỂU VỀ RNNs VÀ PHÂN LOẠI TOKEN (PYTORCH BASICS)
 
-# BÁO CÁO THỰC HÀNH: week5_part1
-
-## Lưu ý , code ở mục notebook/lab5_pytorch_introduction.ipynb
-
-
-## I. Tổng quan
-
-Bài thực hành nhằm mục đích làm quen với **PyTorch**, một thư viện mã nguồn mở phổ biến cho Deep Learning. Nội dung bao gồm 3 phần chính:
-
-1. **Tensor:** Cấu trúc dữ liệu cơ bản trong PyTorch (tương tự NumPy array nhưng chạy được trên GPU).
-2. **Autograd:** Cơ chế tự động tính đạo hàm phục vụ cho việc huấn luyện mô hình.
-3. **torch.nn:** Các module để xây dựng mạng nơ-ron (Neural Networks).
-
----
-
-## II. Các bước triển khai
-
-### 1. Thao tác với Tensor (Task 1)
-
-* **Tạo Tensor:**
-* Từ List Python: `torch.tensor(data)`.
-* Từ NumPy array: `torch.from_numpy(np_array)`.
-* Tensor đặc biệt: `torch.ones_like` (toàn số 1), `torch.rand_like` (ngẫu nhiên).
-* Kiểm tra thuộc tính: `shape`, `dtype`, `device`.
+## I. Các bước triển khai
 
 
-* **Các phép toán:**
-* Cộng, nhân vô hướng, nhân ma trận (`@` hoặc `matmul`).
+### 1. Nghiên cứu lý thuyết (Lý thuyết nền tảng)
 
 
-* **Indexing & Slicing:** Truy cập phần tử tương tự như list hoặc numpy array.
-* **Thay đổi kích thước (Reshape):** Sử dụng `.view()` hoặc `.reshape()` để thay đổi chiều của tensor mà không thay đổi dữ liệu gốc.
+* **RNN (Recurrent Neural Networks):** Mô hình mạng nơ-ron chuyên xử lý dữ liệu chuỗi (như văn bản, âm thanh) bằng cách duy trì trạng thái ẩn (hidden state) qua các bước thời gian.
+* **LSTM (Long Short-Term Memory) & GRU (Gated Recurrent Unit):** Các biến thể cải tiến của RNN giúp giải quyết vấn đề biến mất đạo hàm (vanishing gradient) khi xử lý chuỗi dài. * **Token Classification:** Bài toán gán nhãn cho từng từ (token) trong câu, ví dụ như gán nhãn từ loại (POS Tagging) hoặc nhận diện tên riêng (NER).
 
-### 2. Thực hành với Autograd (Task 2)
+### 2. Thực hành PyTorch (Triển khai code)
 
-* **Khởi tạo:** Tạo tensor với tham số `requires_grad=True` để thông báo cho PyTorch theo dõi các phép toán trên tensor này.
-* **Lan truyền thuận (Forward):** Thực hiện các phép toán tính toán (ví dụ: y = x + 2, z = 3y^2).
-* **Lan truyền ngược (Backward):** Gọi `z.backward()` để tính đạo hàm của z theo x.
-* **Kết quả:** Đạo hàm được lưu tại thuộc tính `.grad` của tensor gốc.
+Các bước thực hành cụ thể trong file `lab5_pytorch_introduction.ipynb`:
 
-### 3. Xây dựng Mô hình với `torch.nn` (Task 3)
+* **Bước 1: Làm quen với Tensor (Task 1):**
+* Khởi tạo Tensor từ List và NumPy array.
+* Tạo các Tensor đặc biệt (`ones`, `rand`).
+* Thực hiện các phép toán cơ bản: Cộng, Nhân vô hướng, Nhân ma trận.
+* Thao tác Indexing, Slicing và thay đổi kích thước (`view`, `reshape`).
 
-* **Lớp Tuyến tính (`nn.Linear`):** Thực hiện phép biến đổi y = xA^T + b.
-* **Lớp Embedding (`nn.Embedding`):** Bảng tra cứu để chuyển đổi các chỉ số (index) thành vector dày đặc (dense vectors).
-* **Xây dựng lớp `MyFirstModel` kế thừa từ `nn.Module`:**
-* Định nghĩa các lớp con trong `__init__`: Embedding, Linear, Activation (ReLU).
-* Định nghĩa luồng dữ liệu trong `forward`: Input -> Embedding -> Linear -> ReLU -> Linear -> Output.
+
+* **Bước 2: Cơ chế Autograd (Task 2):**
+* Thiết lập `requires_grad=True` để theo dõi lịch sử tính toán.
+* Thực hiện lan truyền thuận (Forward pass) qua các biểu thức toán học.
+* Thực hiện lan truyền ngược (Backward pass) để tính đạo hàm tự động.
+
+
+* **Bước 3: Xây dựng Module mạng nơ-ron (Task 3):**
+* Sử dụng `nn.Linear` cho các phép biến đổi tuyến tính.
+* Sử dụng `nn.Embedding` để tạo bảng vector biểu diễn từ.
+* Kết hợp các lớp này trong một class kế thừa từ `nn.Module` (lớp `MyFirstModel`) để tạo thành một mạng nơ-ron hoàn chỉnh gồm: Embedding -> Linear -> ReLU -> Linear -> Output.
 
 
 
 ---
 
-## III. Cách chạy code và Ghi log kết quả
+## II. Cách chạy code và Ghi log kết quả
 
-### 1. Cách chạy
+### 1. Cách chạy code
 
-* **Môi trường:** Jupyter Notebook cài đặt sẵn thư viện `torch` và `numpy`.
-* **Thực thi:** Chạy tuần tự các cell từ trên xuống dưới.
-* **Lưu ý:** Code hiện tại đang chạy trên CPU (mặc định). Nếu muốn chạy trên GPU, cần bỏ chú thích dòng `torch.set_default_device('cuda')` (nếu có phần cứng hỗ trợ).
+* **Môi trường:** Jupyter Notebook (Google Colab hoặc Local) cài đặt Python 3, thư viện `torch` và `numpy`.
+* **Thao tác:** Chạy tuần tự các cell từ trên xuống dưới.
 
 ### 2. Ghi log kết quả
 
-Kết quả được in ra màn hình console (stdout) tại mỗi bước:
+Kết quả dưới đây được trích xuất trực tiếp từ output của các cell trong notebook:
 
-**Kết quả Task 1 (Tensor):**
+**Log Task 1 (Tensor Operations):**
 
 > * **Tensor từ list:** `tensor([[1, 2], [3, 4]])`
-> * **Shape:** `torch.Size([2, 2])`
-> * **Phép nhân ma trận:** Kết quả là `tensor([[5, 11], [11, 25]])`.
+> * **Phép cộng:** `tensor([[2, 4], [6, 8]])`
+> * **Phép nhân ma trận (@):** `tensor([[5, 11], [11, 25]])`
+> * **Shape/Reshape:** Chuyển từ `torch.Size([4, 4])` sang `torch.Size([16, 1])`.
 > 
 > 
 
-**Kết quả Task 2 (Autograd):**
+**Log Task 2 (Autograd):**
 
-> * **x:** `tensor([1.], requires_grad=True)`
-> * **z:** `tensor([27.], grad_fn=<MulBackward0>)`
-> * **Đạo hàm (x.grad):** `tensor([18.])`
+> * **Giá trị x:** `tensor([1.], requires_grad=True)`
+> * **Giá trị z (Forward):** `tensor([27.], grad_fn=<MulBackward0>)`
+> * **Đạo hàm x.grad (Backward):** `tensor([18.])`
 > 
 > 
 
-**Kết quả Task 3 (Neural Network):**
+**Log Task 3 (Neural Network):**
 
-> * **Input Shape:** `torch.Size([1, 4])` (Batch size = 1, Sequence length = 4).
-> * **Output Shape:** `torch.Size([1, 4, 2])` (Mỗi từ trong câu 4 từ được map sang vector 2 chiều).
-> * **Model Output:** `tensor([[[-0.2743, 0.1835], ...]])`
+> * **Linear Output:** `tensor([[ 0.4736, -1.0041], ...])` (Shape: `[3, 2]`)
+> * **Embedding Output:** `tensor([[ 0.0562,  0.6852,  1.7225], ...])` (Shape: `[4, 3]`)
+> * **MyFirstModel Output:** `tensor([[[-0.2743,  0.1835], ...]])` (Shape: `[1, 4, 2]`)
 > 
 > 
 
 ---
 
-## IV. Giải thích kết quả
+## III. Giải thích các kết quả thu được
 
-1. **Tại sao đạo hàm bằng 18?**
-* Biểu thức: y = x + 2; z = 3y^2.
-* Suy ra: z = 3(x+2)^2.
-* Đạo hàm theo x: \frac{dz}{dx} = 3 \cdot 2 \cdot (x+2) = 6(x+2).
-* Tại x = 1: \frac{dz}{dx} = 6(1+2) = 18.
-* Kết quả `x.grad = 18` là chính xác.
+### 1. Kết quả Autograd (Tại sao x.grad = 18?)
 
+Trong Task 2, ta có quy trình tính toán:
 
-2. **Cấu trúc mô hình `MyFirstModel`:**
-* Đầu vào là các chỉ số (indices) của từ.
-* Đi qua `nn.Embedding`: Chuyển số nguyên thành vector (ví dụ 16 chiều).
-* Đi qua `nn.Linear`: Giảm chiều (từ 16 xuống 8).
-* Đi qua `ReLU`: Loại bỏ các giá trị âm (Non-linearity).
-* Đi qua `nn.Linear` cuối: Ra output dimension (ví dụ 2 chiều).
+1. Khởi tạo x = 1.
+2. y = x + 2 = 3.
+3. z = y \times y \times 3 = 3y^2.
+4. Giá trị forward: z = 3 \times (3)^2 = 27.
+
+Khi gọi `z.backward()`, PyTorch tính đạo hàm \frac{\partial z}{\partial x} theo quy tắc chuỗi (chain rule):
 
 
+
+Tại x = 1: \frac{\partial z}{\partial x} = 6(1+2) = 18.
+Kết quả `x.grad` trả về `18.` là hoàn toàn chính xác về mặt toán học.
+
+### 2. Kết quả `MyFirstModel`
+
+Mô hình `MyFirstModel` có kiến trúc:
+
+* **Input:** Batch size = 1, Sequence length = 4 (4 từ).
+* **Embedding:** Chuyển mỗi từ thành vector 16 chiều \rightarrow Shape: `[1, 4, 16]`.
+* **Linear 1 + ReLU:** Chuyển từ 16 chiều xuống 8 chiều \rightarrow Shape: `[1, 4, 8]`.
+* **Linear 2 (Output):** Chuyển từ 8 chiều ra 2 chiều (output dim) \rightarrow Shape: `[1, 4, 2]`.
+Kết quả log `torch.Size([1, 4, 2])` khớp với lý thuyết thiết kế mạng.
 
 ---
 
-## V. Khó khăn gặp phải và Cách giải quyết
+## IV. Khó khăn gặp phải và Cách giải quyết
 
-### 1. Lỗi gọi `backward()` lần 2
+### 1. Lỗi gọi `backward()` lần thứ hai
 
-* **Vấn đề:** Nếu gọi `z.backward()` lần thứ hai mà không chạy lại lan truyền thuận, PyTorch sẽ báo lỗi `RuntimeError: Trying to backward through the graph a second time...`.
-* **Nguyên nhân:** PyTorch sử dụng cơ chế **Dynamic Computation Graph**. Sau khi gọi `backward()`, biểu đồ tính toán sẽ được giải phóng (free) để tiết kiệm bộ nhớ.
+* **Khó khăn:** Nếu bỏ comment dòng lệnh `z.backward()` lần 2 trong Task 2, chương trình sẽ báo lỗi `RuntimeError`.
+* **Nguyên nhân:** PyTorch sử dụng biểu đồ tính toán động (dynamic computation graph). Sau khi gọi `backward()`, biểu đồ này mặc định bị giải phóng (free) để tiết kiệm bộ nhớ.
 * **Giải quyết:**
-* Chỉ gọi `backward()` một lần sau mỗi lần `forward`.
-* Nếu muốn gọi nhiều lần (ví dụ trong high-order derivatives), cần thêm tham số `retain_graph=True` vào lần gọi đầu: `z.backward(retain_graph=True)`.
+* Cách 1: Chỉ gọi `backward()` một lần sau mỗi lần forward.
+* Cách 2: Nếu cần gọi nhiều lần (ví dụ tính đạo hàm bậc cao), sử dụng tham số `retain_graph=True` trong lần gọi đầu: `z.backward(retain_graph=True)`.
 
 
 
-### 2. Kích thước Tensor (Shape Mismatch)
+### 2. Quản lý kích thước (Shape Mismatch)
 
-* **Vấn đề:** Lỗi kích thước khi nhân ma trận hoặc đưa vào lớp Linear.
-* **Giải quyết:** Luôn kiểm tra `.shape` của tensor trước khi thực hiện phép toán. Sử dụng `.view()` hoặc `.reshape()` để điều chỉnh kích thước cho phù hợp (ví dụ: làm phẳng ảnh trước khi đưa vào lớp Linear).
+* **Khó khăn:** Khi kết nối các lớp `Linear` hoặc `Embedding`, nếu kích thước `output_dim` của lớp trước không khớp với `input_dim` của lớp sau, code sẽ lỗi.
+* **Giải quyết:** Luôn kiểm tra `.shape` của tensor đầu ra sau từng lớp (như cách code đã in ra `Model output shape`) để debug. Sử dụng `.view()` hoặc `.reshape()` nếu cần làm phẳng dữ liệu.
 
 ---
 
-## VI. Nguồn tham khảo
+## V. Tài liệu tham khảo
 
-1. **Tài liệu:** File notebook `lab5_pytorch_introduction.ipynb`.
-2. **Thư viện:**
-* [PyTorch Documentation](https://www.google.com/search?q=https://pytorch.org/docs/stable/index.html) (Tensors, Autograd, nn Module).
-* NumPy Documentation.
+1. **Tài liệu lý thuyết (theo yêu cầu Lab):**
+* `lab5_pytorch_introduction.pdf` (Kiến thức cơ bản RNNs/LSTMs).
+* `lecture5_rnn_token_classification.pdf` (Kiến thức về bài toán Token Classification).
+
+
+2. **Tài liệu thực hành:**
+* File notebook: `lab5_pytorch_introduction.ipynb`.
+
+
+3. **Tài liệu ngoài:**
+* PyTorch Documentation ([https://pytorch.org/docs/](https://www.google.com/search?q=https://pytorch.org/docs/)).
+
+
+
+---
+
+## VI. Thông tin Model tạo sẵn
+
+* **Mô hình sử dụng:** Class `MyFirstModel` là một mạng nơ-ron đơn giản (Simple Neural Network) được xây dựng từ đầu (scratch) sử dụng các module cơ bản (`nn.Embedding`, `nn.Linear`, `nn.ReLU`) của PyTorch.
